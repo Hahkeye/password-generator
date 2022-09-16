@@ -7,109 +7,72 @@ const validAnswers = ['yes','y','true','no','n','false'];
 // Assignment Code
 var generateBtn = document.querySelector("#generate");
 
-function promptMeh(){
+
+function validNum(number){ //Prompts the user until they enter a valid number.
+  var tempInput="";
+  while (true) {
+    tempInput=prompt("Please input a valid number less than "+number+" and greater than 8.")
+    if( tempInput<=number && tempInput>=8){
+      return tempInput;
+    }
+    else{
+      alert("Please input a valid number less than "+number+" and greater than 8.")
+    }
+  }
+}
+
+
+function promptMeh(){ // function to collect user input for the various selections
   var passLenght = validNum(128);
-  var stuff=[];
-  (validTorF("Do you want to include lowercase letters?")?stuff.push(letters):console.log("no Lower"));
-  // var lcase = validTorF("Do you want to include lowercase letters?");
-  (validTorF("Do you want to include uppercase letters?")?stuff.push(lettersU):console.log("No Upper"));
-  // var ucase = validTorF("Do you want to include uppercase letters?");
-  (validTorF("Do you want to include numbers?")?stuff.push(numbers):console.log("No numbers"));
-  // var num = validTorF("Do you want to include numbers?");
-  (validTorF("Do you want to include special characters?")?stuff.push(symbols):console.log("No numbers"));
-  // var spec = validTorF("Do you want to include special characters?");
-  // console.log("Lenght:",passLenght," Lcase:",lcase," Ucase:",ucase," Num:",num," Spec:",spec);
-  console.log("Length ",passLenght);
-  console.log("stuff ",stuff);
-  return [passLenght,stuff];
+  var charPool=[];
+  (confirm("Do you want to include lowercase letters?")?charPool.push(letters):console.log("no Lower"));
+  (confirm("Do you want to include uppercase letters?")?charPool.push(lettersU):console.log("No Upper"));
+  (confirm("Do you want to include numbers?")?charPool.push(numbers):console.log("No numbers"));
+  (confirm("Do you want to include special characters?")?charPool.push(symbols):console.log("No numbers"));
+  ((charPool.length==0) ? promptMeh():console.log("asdasd"))
+  return [passLenght,charPool];
+}
+
+function shuffle(target) {//Takes in a string and shuffles it.
+  console.log("Pre shuffle: ",target);
+  target = target.split(""),
+  num = target.length;
+
+  for(var x = num - 1; x > 0; x--) { //iterates backawrds and randomly replaces.
+    var y = Math.floor(Math.random() * (x + 1));
+    var temp = target[x];
+    target[x] = target[y];
+    target[y] = temp;
+  }
+  console.log("Post shuffle: ",target);
+  return target.join("");
 }
 
 
-function generatePassword(){
-  var stufff=promptMeh();
-  console.log(stufff);
+function generatePassword(){//Make sure it chooses one from atleast every category and shuffle
+  var data=promptMeh();
   var temp = "";
-  for(let i=0;i<stufff[0];i++){
-    let category = Math.floor(Math.random()*stufff[1].length);
-    let sel = Math.floor(Math.random()*stufff[1][category].length);
-    temp+=stufff[1][category][sel];
+  let category = 0;
+  for(let i=0;i<data[0];i++){
+    if(i<data[1].length){
+      category = i;
+    }else{
+      category = Math.floor(Math.random()*data[1].length);
     }
-  return temp;
-}
-
-function generatePassword(lenght,stuff){
-  // var stufff=promptMeh();
-  // console.log(stufff);
-  var temp = "";
-  for(let i=0;i<lenght;i++){
-    let category = Math.floor(Math.random()*stuff.length);
-    let sel = Math.floor(Math.random()*stuff[category].length);
-    temp+=stuff[category][sel];
+    let sel = Math.floor(Math.random()*data[1][category].length);
+    temp+=data[1][category][sel];
   }
-  return temp;
+
+  return shuffle(temp);
 }
 
-
-function validNum(number){
-  var temp="";
-  while (true) {
-    temp=prompt("Enter a number less than "+number)
-    if( temp<=number && temp>=8){
-      return temp;
-    }
-    else{
-      alert("Please input a valid number less than ",number,"and greater than 8.")
-    }
-  }
-}
-
-function validTorF(answers){
-  var temp="";
-  while (true) {
-    temp=prompt(answers)
-    if( validAnswers.includes(temp)){
-      if(temp == "yes" || temp=="y" || temp=="true"){
-        return true;
-      }else{
-        return false;
-      }
-      
-    }
-    else{
-      alert("Please input a valid answer.(yes/y/true/no/n/false)")
-    }
-  }
-}
-
-// Write password to the #password input
-function writePassword() {
+function writePassword() { //writes password out to the browser
   var password = generatePassword();
   var passwordText = document.querySelector("#password");
-
+  navigator.clipboard.writeText(password);
   passwordText.value = password;
 
 }
-var datatest=[letters,lettersU,symbols,numbers];
-for(let i=0;i<100;i++){
-  var temps=[];
-  var numOfC = Math.floor(Math.random()*4)+1;
-  console.log("Number of categorsy ",numOfC);
-
-  for(let x=0;x<numOfC;x++){
-    // console.log("x ",x);
-    temps.push(datatest.pop());
-  }
-  // Math.floor(Math.random()*4);
-  // Math.floor(Math.random()*datatest.length);
-  console.log("Data set: ",temps);
-  console.log(generatePassword(8,temps));
-  temps=[];
-  numOfC=0;
-  datatest=[letters,lettersU,symbols,numbers]
-
-}
-
-
 
 // Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);

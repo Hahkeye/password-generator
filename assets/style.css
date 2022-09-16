@@ -116,7 +116,15 @@ button[disabled] {
   border-radius: 6px;
   resize: none;
   overflow: hidden;
+  opacity: 0%;
 }
+
+#password:hover{
+  opacity: 100%;
+  /* background-color: red; */
+}
+
+
 
 @media (max-width: 690px) {
   .btn {
